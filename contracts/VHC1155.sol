@@ -15,7 +15,9 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor(string memory uri_) ERC1155(uri_) {}
+    constructor(string memory uri_) ERC1155(uri_) {
+        require(bytes(uri_).length > 0, "You must provide deploy argument");
+    }
 
     mapping(uint256 => address) internal _tokenOwners;
 
@@ -39,14 +41,13 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
     function setURI(string memory newUri) public onlyOwner {
         _setURI(newUri);
     }
-    
+
     /**
      * @dev Gets the ID of the next free token ID
      */
     function nextTokenId() public view returns (uint256) {
         return _tokenIds.current();
     }
-
 
     /**
      * @dev Mint amount token of type `id` to `to`
@@ -63,8 +64,11 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
         address royaltyRecipient,
         uint256 royaltyValue
     ) external {
-        require(_tokenOwners[id] == address(0x0) || _tokenOwners[id] == msg.sender, "VHC1155: only token owner can mint");
-        
+        require(
+            _tokenOwners[id] == address(0x0) || _tokenOwners[id] == msg.sender,
+            "VHC1155: only token owner can mint"
+        );
+
         uint256 tokenId = id;
 
         if (_tokenOwners[id] == address(0x0)) {
@@ -102,7 +106,11 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
 
         uint256[] memory newTokenIds = new uint256[](ids.length);
         for (uint256 i = 0; i < ids.length; i++) {
-            require(_tokenOwners[ids[i]] == address(0x0) || _tokenOwners[ids[i]] == msg.sender, "VHC1155: only token owner can mint");
+            require(
+                _tokenOwners[ids[i]] == address(0x0) ||
+                    _tokenOwners[ids[i]] == msg.sender,
+                "VHC1155: only token owner can mint"
+            );
             if (_tokenOwners[ids[i]] == address(0x0)) {
                 newTokenIds[i] = _tokenIds.current();
                 _tokenIds.increment();
@@ -131,10 +139,14 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
     /**
      * @dev See {ERC1155-_beforeTokenTransfer}.
      */
-    function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
-        internal
-        override(ERC1155, ERC1155Supply)
-    {
+    function _beforeTokenTransfer(
+        address operator,
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal override(ERC1155, ERC1155Supply) {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 }
