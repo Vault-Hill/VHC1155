@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-
 import "./ERC2981Base.sol";
 
 /**
@@ -17,15 +16,34 @@ abstract contract ERC2981PerTokenRoyalties is ERC2981Base {
      * @dev Sets token royalties
      * @param tokenId the token ID to register royalties against
      * @param recipient recipient of the royalties
-     * @param value percentage (using 2 decimals - 10000 = 100, 0 = 0)
+     * @param amount percentage (using 2 decimals - 10000 = 100, 0 = 0)
      */
     function _setTokenRoyalty(
         uint256 tokenId,
         address recipient,
-        uint256 value
+        uint256 amount
     ) internal {
-        require(value <= 10000, "ERC2981Royalties: Too high");
-        _royalties[tokenId] = RoyaltyInfo(recipient, uint24(value));
+        require(amount <= 10000, "ERC2981Royalties: Too high");
+        _royalties[tokenId] = RoyaltyInfo(recipient, uint24(amount));
+    }
+
+    /**
+     * @dev Update token royalty
+     * @param tokenId - the NFT asset for which royalty information is updated
+     * @param recipient - the receipient of the royalty amount
+     * @param amount - the value of royalty to be use to deduce royalty amount
+     */
+    function updateTokenRoyalty(
+        uint256 tokenId,
+        address recipient,
+        uint256 amount
+    ) external {
+        require(
+            _royalties[tokenId].recipient != address(0x0),
+            "ERC2981Royalties: Token not found"
+        );
+        require(amount <= 10000, "ERC2981Royalties: Too high");
+        _royalties[tokenId] = RoyaltyInfo(recipient, uint24(amount));
     }
 
     /**
