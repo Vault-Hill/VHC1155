@@ -15,16 +15,17 @@ async function main() {
 
   // We get the contract to deploy
   const VHC1155Contract = await ethers.getContractFactory("VHC1155");
-  const vhc1155 = await VHC1155Contract.deploy("vaulthill.io/{tokenId}");
-
+  console.log('Getting contract')
+  const vhc1155 = await VHC1155Contract.deploy("https://vaulthill.io/{tokenId}.json");
   await vhc1155.deployed();
-
-  console.log("Greeter deployed to:", vhc1155.address);
+  console.log("Contract deployed to:", vhc1155.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
