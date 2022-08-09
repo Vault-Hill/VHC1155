@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll=false --bail --detectOpenHandles --verbose"
+    "test": "jest --watchAll=false --bail --detectOpenHandles --verbose",
+    "deploy:goerli": "npx hardhat run scripts/deploy-goerli.ts --network goerli"
   },
   "author": "",
   "license": "ISC",
