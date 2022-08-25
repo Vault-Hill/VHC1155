@@ -4,17 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "./ERC2981PerTokenRoyalties.sol";
 
 /**
  * @title VHC1155
- * @dev Vault Hill's ERC1155 contract
+ * @dev Vault Hill City's ERC1155 contract
  */
 contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
-
     constructor(string memory uri_) ERC1155(uri_) {}
 
     mapping(uint256 => address) internal _tokenOwners;
@@ -39,14 +35,6 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
     function setURI(string memory newUri) public onlyOwner {
         _setURI(newUri);
     }
-    
-    /**
-     * @dev Gets the ID of the next free token ID
-     */
-    function nextTokenId() public view returns (uint256) {
-        return _tokenIds.current();
-    }
-
 
     /**
      * @dev Mint amount token of type `id` to `to`
@@ -64,18 +52,12 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
         uint256 royaltyValue
     ) external {
         require(_tokenOwners[id] == address(0x0) || _tokenOwners[id] == msg.sender, "VHC1155: only token owner can mint");
-        
-        uint256 tokenId = id;
 
-        if (_tokenOwners[id] == address(0x0)) {
-            // If token ID is empty, use next avaible ID
-            tokenId = _tokenIds.current();
-            _tokenOwners[tokenId] = msg.sender;
-            _tokenIds.increment();
-        }
-        _mint(to, tokenId, amount, "");
+        _mint(to, id, amount, "");
+        _tokenOwners[id] = msg.sender;
+
         if (royaltyValue > 0) {
-            _setTokenRoyalty(tokenId, royaltyRecipient, royaltyValue);
+            _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
         }
     }
 
@@ -99,28 +81,19 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
                 ids.length == royaltyValues.length,
             "ERC1155: Arrays length mismatch"
         );
-
-        uint256[] memory newTokenIds = new uint256[](ids.length);
         for (uint256 i = 0; i < ids.length; i++) {
             require(_tokenOwners[ids[i]] == address(0x0) || _tokenOwners[ids[i]] == msg.sender, "VHC1155: only token owner can mint");
-            if (_tokenOwners[ids[i]] == address(0x0)) {
-                newTokenIds[i] = _tokenIds.current();
-                _tokenIds.increment();
-            } else {
-                newTokenIds[i] = ids[i];
-            }
         }
 
-        _mintBatch(to, newTokenIds, amounts, "");
+        _mintBatch(to, ids, amounts, "");
 
-        // Update _tokenOwners and royalties if required
-        for (uint256 i; i < newTokenIds.length; i++) {
-            if (_tokenOwners[newTokenIds[i]] == address(0x0)) {
-                _tokenOwners[newTokenIds[i]] = msg.sender;
+        for (uint256 i; i < ids.length; i++) {
+            if (_tokenOwners[ids[i]] == address(0x0)) {
+                _tokenOwners[ids[i]] = msg.sender;
             }
             if (royaltyValues[i] > 0) {
                 _setTokenRoyalty(
-                    newTokenIds[i],
+                    ids[i],
                     royaltyRecipients[i],
                     royaltyValues[i]
                 );
