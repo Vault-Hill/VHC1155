@@ -1,28 +1,23 @@
-# Advanced Sample Hardhat Project
+# VHC1155 Contract
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+This project contains a contract that follows the ERC1155 token standard. It also
+includes contracts that are inherited by the VHC1155.sol contract which allow for
+token royalties to be set (see https://eips.ethereum.org/EIPS/eip-2981). The EIP
+has been extended to allow for royalties to be set on a per token basis, allowing
+different minted tokens to have unique royalties associated with them.
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+# Testing
 
-Try running some of the following tasks:
+To test the contract, a local hardhat node should be spun up, and the contract should
+then be deployed to this local node. This will generate the relevant typechain folder
+required to run the unit tests.
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
+To run the tests, use the following commands:
+
+```
 npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.ts
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
+npm run deploy:local
+npm run test
 ```
 
 # Etherscan verification
