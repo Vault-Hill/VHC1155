@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --watchAll=false --bail --detectOpenHandles --verbose",
     "deploy:local": "npx hardhat run scripts/deploy.ts --network localhost",
-    "deploy:goerli": "npx hardhat run scripts/deploy.ts --network goerli"
+    "deploy:goerli": "npx hardhat run scripts/deploy.ts --network goerli",
+    "prettier": "prettier --write 'contracts/**/*.sol'"
   },
   "author": "",
   "license": "ISC",

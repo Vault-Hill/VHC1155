@@ -101,7 +101,7 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
         require(
             ids.length == amounts.length &&
                 ids.length == royaltyRecipients.length &&
-                    ids.length == royaltyValues.length,
+                ids.length == royaltyValues.length,
             "ERC1155: Arrays length mismatch"
         );
 
