@@ -38,14 +38,14 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
      * @dev Update `_uri` to `newUri`
      * @param newUri updated URI for all token metadata
      */
-    function setURI(string memory newUri) public onlyOwner {
+    function setURI(string memory newUri) external onlyOwner {
         _setURI(newUri);
     }
 
     /**
      * @dev Gets the ID of the next free token ID
      */
-    function nextTokenId() public view returns (uint256) {
+    function nextTokenId() external view returns (uint256) {
         return _tokenIds.current();
     }
 
