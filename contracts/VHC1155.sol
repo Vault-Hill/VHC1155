@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.9;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -38,14 +38,14 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
      * @dev Update `_uri` to `newUri`
      * @param newUri updated URI for all token metadata
      */
-    function setURI(string memory newUri) public onlyOwner {
+    function setURI(string memory newUri) external onlyOwner {
         _setURI(newUri);
     }
 
     /**
      * @dev Gets the ID of the next free token ID
      */
-    function nextTokenId() public view returns (uint256) {
+    function nextTokenId() external view returns (uint256) {
         return _tokenIds.current();
     }
 
@@ -99,7 +99,8 @@ contract VHC1155 is ERC1155, Ownable, ERC1155Supply, ERC2981PerTokenRoyalties {
         uint256[] memory royaltyValues
     ) external {
         require(
-            ids.length == royaltyRecipients.length &&
+            ids.length == amounts.length &&
+                ids.length == royaltyRecipients.length &&
                 ids.length == royaltyValues.length,
             "ERC1155: Arrays length mismatch"
         );

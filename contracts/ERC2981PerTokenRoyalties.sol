@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.9;
 
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "./ERC2981Base.sol";
@@ -23,7 +23,7 @@ abstract contract ERC2981PerTokenRoyalties is ERC2981Base {
         address recipient,
         uint256 amount
     ) internal {
-        require(amount <= 10000, "ERC2981Royalties: Too high");
+        require(amount <= 10000, "ERC2981Royalties: Amount too high");
         _royalties[tokenId] = RoyaltyInfo(recipient, uint24(amount));
     }
 
@@ -42,8 +42,7 @@ abstract contract ERC2981PerTokenRoyalties is ERC2981Base {
             _royalties[tokenId].recipient != address(0x0),
             "ERC2981Royalties: Token not found"
         );
-        require(amount <= 10000, "ERC2981Royalties: Too high");
-        _royalties[tokenId] = RoyaltyInfo(recipient, uint24(amount));
+        _setTokenRoyalty(tokenId, recipient, amount);
     }
 
     /**

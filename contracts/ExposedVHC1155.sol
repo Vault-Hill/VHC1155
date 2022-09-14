@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.9;
 
 import "./VHC1155.sol";
 
@@ -8,7 +8,11 @@ contract ExposedVHC1155 is VHC1155 {
         require(bytes(uri_).length > 0, "You must provide deploy argument");
     }
 
-    function getLatestTokenOwner(uint256 index) public view returns (address) {
+    function getLatestTokenOwner(uint256 index)
+        external
+        view
+        returns (address)
+    {
         return _tokenOwners[index];
     }
 }
